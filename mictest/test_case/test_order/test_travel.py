@@ -14,16 +14,16 @@ def test_add_travel():
     fullName = 'a'+str(rand)
     lastName = 'b'+str(rand)
     firstName = 'c'+str(rand)
-    start = time.mktime((1960,1,1,0,0,0,0,0,0))
+    start = time.mktime((1971,1,1,0,0,0,0,0,0))
     end = time.mktime((2020,4,30,2,3,5,9,5,9))
     t = random.randint(start, end)
     date_touple = time.localtime(t)
     birthday = time.strftime("%Y-%m-%d", date_touple)
 
-    r = requests.post(test_host+'/micro-service/ms/traveller/86',
+    r = requests.post(test_mic+'/micro-service/ms/traveller/'+str(userid),
                       headers = headers,
                       json={
-                          "userCode": 707827,
+                          "userCode": msUserCode,
                           "id": "",
                           "code": "",
                           "fullName": fullName,
@@ -45,6 +45,7 @@ def test_add_travel():
                               }
                           ]
                       })
+    print('新增旅客：',r.json())
     assert r.json()['message'] == '成功'
     assert r.json()['data']
 
@@ -52,8 +53,9 @@ def test_add_travel():
 @allure.story('查看旅客详情')
 def test_edit_travel(test_query_travel):
     travelCode = test_query_travel[0]
-    r = requests.get(test_host+'/micro-service/ms/traller/detail/'+travelCode,
+    r = requests.get(test_mic+'/micro-service/ms/traller/detail/'+travelCode,
                      headers=headers)
     result = r.json()['data']['code']
+    print('查看旅客详情：',r.json())
     assert result == travelCode
 

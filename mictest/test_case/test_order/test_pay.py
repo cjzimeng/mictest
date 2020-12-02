@@ -10,7 +10,7 @@ queryData = [{'queryType': 2}]
 def test_pay(test_order_list):
     orderid = test_order_list[0]
     #获取订单信息
-    r = requests.get(test_host+'/micro-service/order/payinfodetails/'+str(orderid),
+    r = requests.get(test_mic+'/micro-service/order/payinfodetails/'+str(orderid),
                      headers = headers)
     result = r.json()['data']
     orderCode = result['orderCode']
@@ -18,11 +18,12 @@ def test_pay(test_order_list):
     totalMoney = result['needPayTotal']
 
     #调用预支付
-    r = requests.post(test_host+'/micro-service/wxjspay-unifiedorder',
+    r = requests.post(test_mic+'/micro-service/wxjspay-unifiedorder',
                       headers = headers,
                       json = { "orderId": str(orderid),
                                  "orderCode": orderCode,
                                  "totalMoney": str(totalMoney),
                                  "body": body,
                                  "openid": openId})
+    print('调用预支付：',r.json())
     assert r.json()['message'] == '成功'

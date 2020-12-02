@@ -15,7 +15,7 @@ def test_add_address():
     str_phone = str_start + str_end
 
     detail = '详细地址b'+str(rand)
-    r = requests.post(test_host+'/micro-service/person-data/add-address',
+    r = requests.post(test_mic+'/micro-service/person-data/add-address',
                       headers=headers,
                       json={"name":name,
                             "mobile":str_phone,
@@ -23,6 +23,6 @@ def test_add_address():
                             "cityId":80939,
                             "divisionId":272755,
                             "detail":detail,"postcode":None,"division":"岳麓区",
-                            "userCode":707827})
+                            "userCode":msUserCode})
     result = r.json()['data']
     assert result

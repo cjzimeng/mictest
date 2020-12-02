@@ -160,21 +160,21 @@ headersa = {
            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1 wechatdevtools/1.02.1911180 MicroMessenger/7.0.4 Language/zh_CN webview/'}
 
 
-r1 = requests.get('https://miniapptest.yujianmeihao.net/api/micro-service/order/list/count/707827',
-                  headers = headers)
-
-r = requests.post('https://miniapptest.yujianmeihao.net/api/micro-service/order/page/list',
-                      headers = headersa,
-                      json={"userCode":707827,"pageNum":1,"pageSize":10,"queryType":2})
-# print(r.json())
-
-r1 = requests.get('https://miniapptest.yujianmeihao.net/api/micro-service/order/list/count/707827',
-                  headers = headers)
-# print(r1.json())
-
-
-r2 = requests.put('https://miniapptest.yujianmeihao.net/api/micro-service/order/pre/cancel/3134',
-                         headers=headers)
+# r1 = requests.get('https://miniapptest.yujianmeihao.net/api/micro-service/order/list/count/707827',
+#                   headers = headers)
+#
+# r = requests.post('https://miniapptest.yujianmeihao.net/api/micro-service/order/page/list',
+#                       headers = headersa,
+#                       json={"userCode":707827,"pageNum":1,"pageSize":10,"queryType":2})
+# # print(r.json())
+#
+# r1 = requests.get('https://miniapptest.yujianmeihao.net/api/micro-service/order/list/count/707827',
+#                   headers = headers)
+# # print(r1.json())
+#
+#
+# r2 = requests.put('https://miniapptest.yujianmeihao.net/api/micro-service/order/pre/cancel/3134',
+#                          headers=headers)
 # print(r2.json())
 import random
 rand = random.randint(300000,800000)
@@ -208,21 +208,21 @@ date = time.strftime("%Y-%m-%d", date_touple)
 # str_phone=str_start+str_end
 # print(str_phone)
 
-r = requests.post(test_host+'/micro-service/ms/person/list',
-                      headers=headers,
-                      json={"userCode":707827,"pageNum":1,"pageSize":15})
-result = r.json()['data']['list']
-contactid = []
-for i in result:
-    contactid.append(i['id'])
+# r = requests.post(test_host+'/micro-service/ms/person/list',
+#                       headers=headers,
+#                       json={"userCode":707827,"pageNum":1,"pageSize":15})
+# result = r.json()['data']['list']
+# contactid = []
+# for i in result:
+#     contactid.append(i['id'])
 
-r = requests.post(test_host+'/micro-service/person-data/address-list',
-                      headers=headers,
-                      json={"userCode":707827,"pageNum":1,"pageSize":10})
-result = r.json()['data']['list']
-addressid = []
-for i in result:
-    addressid.append(i['id'])
+# r = requests.post(test_host+'/micro-service/person-data/address-list',
+#                       headers=headers,
+#                       json={"userCode":707827,"pageNum":1,"pageSize":10})
+# result = r.json()['data']['list']
+# addressid = []
+# for i in result:
+#     addressid.append(i['id'])
 
 # print(type(addressid[0]))
 
@@ -230,3 +230,8 @@ print(type((datetime.datetime.now()).strftime('%Y-%m-%d')))
 date = (datetime.datetime.now()).strftime('%Y-%m-%d')
 a = (datetime.datetime.strptime(date,'%Y-%m-%d').date()+datetime.timedelta(days=10)).strftime("%Y-%m-%d")
 print(a)
+
+
+
+
+

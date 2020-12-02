@@ -11,10 +11,11 @@ def test_add_invoice():
     title1 = 'abc' + str(rand)
 
     #添加个人发票
-    r1 = requests.post(test_host+'/micro-service/person-data/add-invoice',
+    r1 = requests.post(test_mic+'/micro-service/person-data/add-invoice',
                        headers=headers,
-                       json={"type":"PERSONAL","title":title1,"userCode":707827})
+                       json={"type":"PERSONAL","title":title1,"userCode":msUserCode})
     result1 = r1.json()['data']
+    print('添加个人发票：',r1.json)
     assert result1
 
     title2 = 'qiyeaa'+str(rand)
@@ -24,7 +25,7 @@ def test_add_invoice():
     bank = 'bank'+str(rand)
     bankAccount = '6217088'+str(rand)
     #添加企业发票
-    r2 = requests.post(test_host+'/micro-service/person-data/add-invoice',
+    r2 = requests.post(test_mic+'/micro-service/person-data/add-invoice',
                        headers=headers,
                        json={"title":title2,"type":"COMPANY",
                              "taxNumber":taxNumber,
@@ -32,15 +33,17 @@ def test_add_invoice():
                              "registeAddress":registeAddress,
                              "companyMobile":companyMobile,
                              "bank":bank,
-                             "bankAccount":bankAccount,"userCode":707827})
+                             "bankAccount":bankAccount,"userCode":msUserCode})
     result2 = r2.json()['data']
+    print('添加企业发票：',r2.json())
     assert result2
 
 @allure.title('删除发票')
 @allure.story('删除发票')
 def test_del_invoice(test_query_invoice):
     invoiceid = test_query_invoice[0]
-    r = requests.get(test_host+'/micro-service/person-data/del-invoice/'+str(invoiceid),
+    r = requests.get(test_mic+'/micro-service/person-data/del-invoice/'+str(invoiceid),
                      headers=headers)
     result = r.json()
+    print('删除发票：',r.json())
     assert result['message']=='成功'

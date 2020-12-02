@@ -18,9 +18,9 @@ def test_add_demand():
 
     date = (datetime.datetime.now()).strftime('%Y-%m-%d')
     tripDate= (datetime.datetime.strptime(date,'%Y-%m-%d').date()+datetime.timedelta(days=10)).strftime("%Y-%m-%d")
-    r = requests.post(test_host+'/micro-service/customized-demand',
+    r = requests.post(test_mic+'/micro-service/customized-demand',
                       headers=headers,
-                      json={"userCode":707827,
+                      json={"userCode":msUserCode,
                             "contactIds":[],
                             "name":name,
                             "mobile":str_phone,
@@ -37,7 +37,7 @@ def test_add_demand():
 @allure.story('删除出游需求')
 def test_del_demand(test_query_demand):
     demandid = test_query_demand[0]
-    r = requests.delete(test_host+'/micro-service/customized-demand/'+str(demandid),
+    r = requests.delete(test_mic+'/micro-service/customized-demand/'+str(demandid),
                         headers=headers)
     result = r.json()['data']
     assert result == demandid

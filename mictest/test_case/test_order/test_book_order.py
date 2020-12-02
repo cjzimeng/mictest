@@ -4,29 +4,29 @@ import requests
 import json
 import pytest
 import datetime
+import time
 from test_case.test_basic_data import *
 
 @allure.title('产品预订测试')
-@allure.testcase('http://calapi.51jirili.com/dream/categoryList','预订用例地址')
 @allure.feature('产品预订')
 def test_book(test_get_list):
-    proid = test_get_list[0]
+    proidtmp = test_get_list[0]
+    #proid = 112
     # 查询产品线路ID
-    r = requests.get(test_host + '/micro-service/lines',
-                     headers=headers,
-                     params={'productId': proid})
+    r = requests.get(test_mic + '/micro-service/product/' + str(proid),
+                     headers=headers)
     assert r.json()['message'] == '成功'
-    line = r.json()['data']
+    line = r.json()['data']['lineWXDtos']
     lineid = line[0]['lineId']
     minprice = line[0]['lineLowerPrice']
 
     #查询线路ID对应的团期
-    r = requests.get(test_host+'/micro-service/tourprice/tourprices/'+str(lineid),
+    r = requests.get(test_mic+'/micro-service/tourprice/tourprices/'+str(lineid),
                      headers = headers)
     line_tour = (r.json()['data'][0])['selectedTourPeriod']
 
     #查询产品方案及对应价格信息
-    r = requests.post(test_host+'/micro-service/person-data/order-product',
+    r = requests.post(test_mic+'/micro-service/person-data/order-product',
                      headers = headers,
                      json = {'cityId':9980939,'lineId':lineid,'productImg':'','selectedTime':line_tour})
     planDetail = (r.json()['data']['productPlan'])['planDetail']
@@ -44,24 +44,27 @@ def test_book(test_get_list):
                 j['reserveNum'] = 0
 
     # 创建订单
-    r = requests.post(test_host + '/micro-service/order/draft/86',
+    r = requests.post(test_mic + '/micro-service/order/draft/'+str(userid),
                       headers=headers,
                       json={'token': 'onMss5Kh39RvesEx08eIloCgSsoo'})
     print(r.json()['data'])
     orderid = r.json()['data']
 
     #查询产品的天数
-    r = requests.get(test_host+'/micro-service/product/'+str(proid),
+    r = requests.get(test_mic+'/micro-service/product/'+str(proid),
                      headers = headers)
     travelDay = r.json()['data']['travelDay']
-    backDate= (datetime.datetime.strptime(line_tour, '%Y-%m-%d').date()+datetime.timedelta(days=travelDay-1)).strftime("%Y-%m-%d")
+    if travelDay==None:
+        backDate=datetime.datetime.now().strftime("%Y-%m-%d")
+    else:
+        backDate= (datetime.datetime.strptime(line_tour, '%Y-%m-%d').date()+datetime.timedelta(days=travelDay-1)).strftime("%Y-%m-%d")
 
     # 预订订单
-    r = requests.post(test_host + '/micro-service/person-data/product-reserve',
+    r = requests.post(test_mic + '/micro-service/person-data/product-reserve',
                       headers=headers,
                       json={
-                          "userId": 86,
-                          "userCode": 707827,
+                          "userId": userid,
+                          "userCode": msUserCode,
                           "orderId": orderid,
                           "productId": proid,
                           "lineId": lineid,
@@ -78,22 +81,26 @@ def test_book(test_get_list):
                           "trallers": [],
                           "singleRoomPlan": "ADVANCE"
                       })
+    print('预订订单：',r.json())
     assert r.json()['message'] == '成功'
     assert r.json()['data'] == orderid
 
-# @allure.title('取消订单')
-# @allure.story('取消订单')
-# def test_cancel():
-#     orderid = '123'
-#     r = requests.put(test_host + '/micro-service/order/pre/cancel/' + str(orderid),
-#                      headers=headers)
-#     print(r.json()['data']['validCode'])
-#     validcode = r.json()['data']['validCode']
-#     r = requests.put(test_host + '/micro-service/order/miniapp-cancel/',
-#                      headers=headers,
-#                      json={
-#                          'orderId': orderid,
-#                          'validCode': validcode,
-#                          'operateUid': 86
-#                      })
-#     assert r.json()['message'] == '成功'
+    time.sleep(1)
+
+
+
+    #取消订单
+    r = requests.put(test_mic + '/micro-service/order/pre/cancel/' + str(orderid),
+                     headers=headers)
+    # print(r.json()['data']['validCode'])
+    validcode = (r.json()['data'])['validCode']
+    r = requests.put(test_mic + '/micro-service/order/miniapp-cancel/',
+                     headers=headers,
+                     json={
+                         'orderId': str(orderid),
+                         'validCode': validcode,
+                         'operateUid': userid
+                     })
+    print('取消订单：',r.json())
+    assert r.json()['message'] == '成功'
+

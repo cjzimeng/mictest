@@ -13,9 +13,9 @@ def test_add_contact():
     str_start = random.choice(['135', '136', '138'])
     str_end = ''.join(random.sample('0123456789', 8))
     str_phone = str_start + str_end
-    r = requests.post(test_host+'/micro-service/ms/person',
+    r = requests.post(test_mic+'/micro-service/ms/person',
                       headers=headers,
-                      json={"name":name,"mobile":str_phone,"sex":1,"userCode":707827})
+                      json={"name":name,"mobile":str_phone,"sex":1,"userCode":msUserCode})
     result = r.json()['data']
     assert result
 
@@ -23,7 +23,7 @@ def test_add_contact():
 @allure.story('删除联系人')
 def test_del_contact(test_query_contacts):
     contactid = test_query_contacts[0]
-    r = requests.delete(test_host+'/micro-service/ms/person/'+str(contactid),
+    r = requests.delete(test_mic+'/micro-service/ms/person/'+str(contactid),
                         headers=headers)
     result = r.json()
     assert result['message'] == '成功'
